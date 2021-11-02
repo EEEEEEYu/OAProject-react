@@ -26,7 +26,7 @@ class IconAndTitle extends React.Component {
 
 const wrapper_style = {
     height:120,
-    backgroundColor:"green",
+    backgroundColor:"white",
     alignContent:"center"
 }
 
@@ -37,7 +37,7 @@ const logo_style = {
 
 const col1_style = {
     flex:1,
-    backgroundColor: "yellow",
+    backgroundColor: "white",
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -50,7 +50,7 @@ const col2_style = {
     paddingLeft: 20,
     paddingTop: 20,
     justifyContent:"left",
-    backgroundColor:"red"
+    backgroundColor:"white"
 }
 
 

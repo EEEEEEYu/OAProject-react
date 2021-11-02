@@ -1,18 +1,20 @@
-import 'antd/dist/antd.css';
+import React from 'react';
 
 import IconAndTitle from "./IconAndTitle";
 import RecommenderList from "./RecommenderList";
 import PriceList from "./PriceList";
 
 
-function App() {
-    return (
-        <div>
-            <IconAndTitle/>
-            <RecommenderList/>
-            <PriceList/>
-        </div>
-    );
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <IconAndTitle/>
+                <RecommenderList/>
+                <PriceList/>
+            </div>
+        );
+    }
 }
 
 export default App;
