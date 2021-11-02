@@ -1,54 +1,58 @@
 import React from 'react';
 import 'antd/dist/antd.css'
-import {List,Card} from "antd";
+import {Row, Col, Divider} from "antd";
+import Title from "antd/es/typography/Title";
 
-const data = [
-    {
-        title: 'Title 1',
-        content: "content 1"
-    },
-    {
-        title: 'Title 2',
-        content: "content 2"
-    },
-    {
-        title: 'Title 3',
-        content: "content 3"
-    },
-    {
-        title: 'Title 4',
-        content: "content 4"
-    },
-    {
-        title: 'Title 5',
-        content: "content 5"
-    },
-    {
-        title: 'Title 6',
-        content: "content 6"
-    },
-]
+class Card extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <div style={{border: '1px solid gray'}}>
+                <div>{this.props.title}</div>
+                <Divider></Divider>
+                <div>{this.props.text}</div>
+            </div>
+        )
+    }
+}
 
 class RecommenderList extends React.Component {
     constructor(props) {
         super(props);
     }
 
-
-
     render() {
         return (
-            <List
-                grid={{ gutter: 16, column: 4 }}
-                dataSource={data}
-                renderItem={item => (
-                    <List.Item>
-                        <Card title={item.title}>{item.content}</Card>
-                    </List.Item>
-                )}
-            />
+            <div style={wrapper_style}>
+                <Title>Recommended</Title>
+                <div className="site-card-wrapper">
+                    <Row gutter={16}>
+                        <Col span={6}>
+                            <Card title="Card title" text="Card content"/>
+                        </Col>
+                        <Col span={6}>
+                            <Card title="Card title" text="Card content"/>
+                        </Col>
+                        <Col span={6}>
+                            <Card title="Card title" text="Card content"/>
+                        </Col>
+                        <Col span={6}>
+                            <Card title="Card title" text="Card content"/>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         )
     }
+}
+
+const wrapper_style = {
+    paddingTop: 20,
+    marginLeft: 30,
+    marginRight: 30
 }
 
 export default RecommenderList;
