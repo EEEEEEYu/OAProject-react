@@ -8,6 +8,7 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import axios from 'axios';
 
 const styles = {
     cardCategoryWhite: {
@@ -44,6 +45,40 @@ const useStyles = makeStyles(styles);
 class PriceList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            binanceData:{},
+            bittrexData:{},
+        };
+    }
+
+    fetchData() {
+        axios.all([
+            axios.get('/getMostRecentBinancePrice'),
+            axios.get('/getMostRecentBittrexPrice')
+        ]).then(axios.spread((...response)=>{
+                const binance = response[0].data;
+                const bittrex = response[1].data;
+                console.log(binance)
+                this.setState({
+                    binanceData: binance,
+                    bittrexData: bittrex
+                })
+            })).catch((error) => {
+                console.log(error)
+            }
+        );
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(()=>this.fetchData(), 1000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval)
+    }
+
+    formatPriceDisplay(price) {
+        return parseFloat(price).toFixed(2).toString() + '$'
     }
 
     render() {
@@ -54,22 +89,44 @@ class PriceList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Simple Table</h4>
-                                <p className={classes.cardCategoryWhite}>
-                                    Here is a subtitle for this table
-                                </p>
+                                <h4 className={classes.cardCategoryWhite}>Binance</h4>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Name", "Country", "City", "Salary"]}
+                                    tableHead={["Crypto Name", "Buy Price", "Sell Price", "Time Updated"]}
                                     tableData={[
-                                        ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                                        ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                                        ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                                        ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                                        ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-                                        ["Mason Porter", "Chile", "Gloucester", "$78,615"],
+                                        ["BTCUSDT",
+                                            this.formatPriceDisplay(this.state.binanceData['btcbuyPrice']),
+                                            this.formatPriceDisplay(this.state.binanceData['btcsellPrice']),
+                                            this.state.binanceData['time']],
+                                        ["ETHUSDT",
+                                            this.formatPriceDisplay(this.state.binanceData['ethbuyPrice']),
+                                            this.formatPriceDisplay(this.state.binanceData['ethsellPrice']),
+                                            this.state.binanceData['time']]
+                                    ]}
+                                />
+                            </CardBody>
+                        </Card>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={12}>
+                        <Card>
+                            <CardHeader color="primary">
+                                <h4 className={classes.cardCategory}>Bittrex</h4>
+                            </CardHeader>
+                            <CardBody>
+                                <Table
+                                    tableHeaderColor="primary"
+                                    tableHead={["Crypto Name", "Buy Price", "Sell Price", "Time Updated"]}
+                                    tableData={[
+                                        ["BTCUSDT",
+                                            this.formatPriceDisplay(this.state.bittrexData['btcbuyPrice']),
+                                            this.formatPriceDisplay(this.state.bittrexData['btcsellPrice']),
+                                            this.state.bittrexData['time']],
+                                        ["ETHUSDT",
+                                            this.formatPriceDisplay(this.state.bittrexData['ethbuyPrice']),
+                                            this.formatPriceDisplay(this.state.bittrexData['ethsellPrice']),
+                                            this.state.bittrexData['time']]
                                     ]}
                                 />
                             </CardBody>
