@@ -6,19 +6,78 @@ import Card from "./Card/Card";
 import CardHeader from "./Card/CardHeader";
 import CardIcon from "./Card/CardIcon";
 import CardFooter from "./Card/CardFooter";
-import Danger from "./Typography/Danger";
 
-import Icon from "@material-ui/core/Icon";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import {Accessibility, Cake, DateRange, LocalOffer, Smartphone, Store, Update, Warning} from "@material-ui/icons";
+import {
+    Accessibility, Apple,
+    Cake,
+    DateRange,
+    LocalOffer,
+    Money,
+    Smartphone,
+    Store,
+    Update,
+    Warning
+} from "@material-ui/icons";
 
 import styles from "../assets/jss/material-dashboard-react/views/dashboardStyle"
+import EventBus from './EventBus'
 const useStyles = makeStyles(styles);
 
 
 class RecommenderList extends React.Component {
     constructor(props) {
         super(props)
+        this.state={
+            btcBestSellPrice: 0.0,
+            btcBestSellExchange: "None",
+            btcBestBuyPrice: 0.0,
+            btcBestBuyExchange: "None",
+            ethBestSellPrice: 0.0,
+            ethBestSellExchange: "None",
+            ethBestBuyPrice: 0.0,
+            ethBestBuyExchange: "None"
+        }
+    }
+
+    componentDidMount() {
+        EventBus.addEventListener('getData', this.handleEvent)
+    }
+
+    componentWillUnmount() {
+        EventBus.removeEventListener('getData', this.handleEvent)
+    }
+
+    // Update state when receiving data from the price list.
+    handleEvent = (e) => {
+        const binance = e.detail.binanceData;
+        const bittrex = e.detail.bittrexData;
+        let btcBestSellPrice = Math.max(binance['btcsellPrice'], bittrex['btcsellPrice']);
+        let btcBestSellExchange = btcBestSellPrice === binance['btcsellPrice']? "Binance" :"Bittrex";
+
+        let btcBestBuyPrice = Math.min(binance['btcbuyPrice'], bittrex['btcbuyPrice']);
+        let btcBestBuyExchange = (btcBestBuyPrice === binance['btcbuyPrice'])? "Binance" :"Bittrex";
+
+        let ethBestSellPrice = Math.max(binance['ethsellPrice'], bittrex['ethsellPrice']);
+        let ethBestSellExchange = ethBestSellPrice === binance['ethsellPrice']? "Binance" :"Bittrex";
+
+        let ethBestBuyPrice = Math.min(binance['ethbuyPrice'], bittrex['ethbuyPrice']);
+        let ethBestBuyExchange = ethBestBuyPrice === binance['ethbuyPrice']? "Binance": "Bittrex";
+
+        this.setState({
+            btcBestSellPrice: btcBestSellPrice,
+            btcBestSellExchange: btcBestSellExchange,
+            btcBestBuyPrice: btcBestBuyPrice,
+            btcBestBuyExchange: btcBestBuyExchange,
+            ethBestSellPrice: ethBestSellPrice,
+            ethBestSellExchange: ethBestSellExchange,
+            ethBestBuyPrice: ethBestBuyPrice,
+            ethBestBuyExchange: ethBestBuyExchange
+        })
+    }
+
+    formatPriceDisplay(price) {
+        return '$'+parseFloat(price).toFixed(2).toString()
     }
 
     render() {
@@ -28,23 +87,17 @@ class RecommenderList extends React.Component {
                 <GridContainer>
                     <GridItem xs={12} sm={6} md={3}>
                         <Card>
-                            <CardHeader color="warning" stats icon>
-                                <CardIcon color="warning">
-                                    <Smartphone/>
+                            <CardHeader color="rose" stats icon>
+                                <CardIcon color="rose">
+                                    <Apple />
                                 </CardIcon>
-                                <p className={classes.cardCategory}>Used Space</p>
-                                <h3 className={classes.cardTitle}>
-                                    49/50 <small>GB</small>
-                                </h3>
+                                <p className={classes.cardCategory}>Revenue</p>
+                                <h3 className={classes.cardTitle}>{this.formatPriceDisplay(this.state.btcBestBuyPrice)}</h3>
                             </CardHeader>
                             <CardFooter stats>
                                 <div className={classes.stats}>
-                                    <Danger>
-                                        <Warning />
-                                    </Danger>
-                                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                                        Get more space
-                                    </a>
+                                    <Money />
+                                    {"BTC Best Buy:"+this.state.btcBestBuyExchange}
                                 </div>
                             </CardFooter>
                         </Card>
@@ -56,12 +109,12 @@ class RecommenderList extends React.Component {
                                     <Store />
                                 </CardIcon>
                                 <p className={classes.cardCategory}>Revenue</p>
-                                <h3 className={classes.cardTitle}>$34,245</h3>
+                                <h3 className={classes.cardTitle}>{this.formatPriceDisplay(this.state.btcBestSellPrice)}</h3>
                             </CardHeader>
                             <CardFooter stats>
                                 <div className={classes.stats}>
                                     <DateRange />
-                                    Last 24 Hours
+                                    {"BTC Best Sell:"+this.state.btcBestSellExchange}
                                 </div>
                             </CardFooter>
                         </Card>
@@ -73,12 +126,12 @@ class RecommenderList extends React.Component {
                                     <Cake/>
                                 </CardIcon>
                                 <p className={classes.cardCategory}>Fixed Issues</p>
-                                <h3 className={classes.cardTitle}>75</h3>
+                                <h3 className={classes.cardTitle}>{this.formatPriceDisplay(this.state.ethBestBuyPrice)}</h3>
                             </CardHeader>
                             <CardFooter stats>
                                 <div className={classes.stats}>
                                     <LocalOffer />
-                                    Tracked from Github
+                                    {"ETH Best Buy:"+this.state.ethBestBuyExchange}
                                 </div>
                             </CardFooter>
                         </Card>
@@ -90,12 +143,12 @@ class RecommenderList extends React.Component {
                                     <Accessibility />
                                 </CardIcon>
                                 <p className={classes.cardCategory}>Followers</p>
-                                <h3 className={classes.cardTitle}>+245</h3>
+                                <h3 className={classes.cardTitle}>{this.formatPriceDisplay(this.state.ethBestSellPrice)}</h3>
                             </CardHeader>
                             <CardFooter stats>
                                 <div className={classes.stats}>
                                     <Update />
-                                    Just Updated
+                                    {"ETH Best Sell:"+this.state.ethBestSellExchange}
                                 </div>
                             </CardFooter>
                         </Card>
@@ -104,12 +157,6 @@ class RecommenderList extends React.Component {
             </div>
         )
     }
-}
-
-const wrapper_style = {
-    paddingTop: 20,
-    marginLeft: 30,
-    marginRight: 30
 }
 
 

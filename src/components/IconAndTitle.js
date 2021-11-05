@@ -3,6 +3,8 @@ import 'antd/dist/antd.css'
 import {Col, Row} from "antd";
 import logo from "../assets/download.png";
 import Title from "antd/es/typography/Title";
+import {ColorizeRounded} from "@material-ui/icons";
+import Text from "antd/es/typography/Text";
 
 
 class IconAndTitle extends React.Component {
@@ -17,7 +19,9 @@ class IconAndTitle extends React.Component {
                     <img src={logo} style={logo_style} className={"logo"}/>
                 </Col>
                 <Col style={col2_style}>
-                    <Title>Discover Your Crypto Insights</Title>
+                    <Title>
+                        <Text style={{color:"rgb(43,58,110)"}} italic={true}>Discover Your Cryptocurrency Insights</Text>
+                    </Title>
                 </Col>
             </Row>
         )

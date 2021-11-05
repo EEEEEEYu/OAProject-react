@@ -8,6 +8,7 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import EventBus from "./EventBus";
 import axios from 'axios';
 
 const styles = {
@@ -58,15 +59,19 @@ class PriceList extends React.Component {
         ]).then(axios.spread((...response)=>{
                 const binance = response[0].data;
                 const bittrex = response[1].data;
-                console.log(binance)
                 this.setState({
                     binanceData: binance,
                     bittrexData: bittrex
                 })
+                this.sendData()
             })).catch((error) => {
                 console.log(error)
             }
         );
+    }
+
+    sendData = () => {
+        EventBus.dispatchEvent('getData', this.state)
     }
 
     componentDidMount() {
@@ -78,7 +83,7 @@ class PriceList extends React.Component {
     }
 
     formatPriceDisplay(price) {
-        return parseFloat(price).toFixed(2).toString() + '$'
+        return '$'+parseFloat(price).toFixed(2).toString()
     }
 
     render() {
@@ -89,12 +94,12 @@ class PriceList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardCategoryWhite}>Binance</h4>
+                                <text color={"white"}>Binance</text>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Crypto Name", "Buy Price", "Sell Price", "Time Updated"]}
+                                    tableHead={["Cryptocurrency", "Buy Price", "Sell Price", "Last Updated"]}
                                     tableData={[
                                         ["BTCUSDT",
                                             this.formatPriceDisplay(this.state.binanceData['btcbuyPrice']),
@@ -112,12 +117,12 @@ class PriceList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardCategory}>Bittrex</h4>
+                                <text color={"white"}>Bittrex</text>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Crypto Name", "Buy Price", "Sell Price", "Time Updated"]}
+                                    tableHead={["Cryptocurrency", "Buy Price", "Sell Price", "Last Updated"]}
                                     tableData={[
                                         ["BTCUSDT",
                                             this.formatPriceDisplay(this.state.bittrexData['btcbuyPrice']),
@@ -127,44 +132,6 @@ class PriceList extends React.Component {
                                             this.formatPriceDisplay(this.state.bittrexData['ethbuyPrice']),
                                             this.formatPriceDisplay(this.state.bittrexData['ethsellPrice']),
                                             this.state.bittrexData['time']]
-                                    ]}
-                                />
-                            </CardBody>
-                        </Card>
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={12}>
-                        <Card plain>
-                            <CardHeader plain color="primary">
-                                <h4 className={classes.cardTitleWhite}>
-                                    Table on Plain Background
-                                </h4>
-                                <p className={classes.cardCategoryWhite}>
-                                    Here is a subtitle for this table
-                                </p>
-                            </CardHeader>
-                            <CardBody>
-                                <Table
-                                    tableHeaderColor="primary"
-                                    tableHead={["ID", "Name", "Country", "City", "Salary"]}
-                                    tableData={[
-                                        ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                                        ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                                        ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                                        [
-                                            "4",
-                                            "Philip Chaney",
-                                            "$38,735",
-                                            "Korea, South",
-                                            "Overland Park",
-                                        ],
-                                        [
-                                            "5",
-                                            "Doris Greene",
-                                            "$63,542",
-                                            "Malawi",
-                                            "Feldkirchen in Kärnten",
-                                        ],
-                                        ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"],
                                     ]}
                                 />
                             </CardBody>
