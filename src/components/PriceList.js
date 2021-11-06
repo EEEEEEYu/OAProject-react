@@ -54,8 +54,8 @@ class PriceList extends React.Component {
 
     fetchData() {
         axios.all([
-            axios.get('/getMostRecentBinancePrice'),
-            axios.get('/getMostRecentBittrexPrice')
+            axios.get('http://localhost:8888/api/v1/getMostRecentBinancePrice'),
+            axios.get('http://localhost:8888/api/v1/getMostRecentBittrexPrice')
         ]).then(axios.spread((...response)=>{
                 const binance = response[0].data;
                 const bittrex = response[1].data;
